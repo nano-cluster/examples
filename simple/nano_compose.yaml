@@ -1,0 +1,28 @@
+---
+modules:
+  http_relay:
+    fork: ./http_relay.py
+    accepts: jsonl
+    # modules allowed to be called via http relay
+    uses:
+    - num
+    - book
+  db:
+    fork: ./db_relay.py
+    accepts: jsonl
+    # this is the opposite of uses
+    only_from:
+    - book
+  num:
+    fork: ./num.py
+    accepts: jsonl
+  book:
+    fork: ./book.py
+    accepts: jsonl
+    uses:
+    - db
+  periodic:
+    fork: ./periodic.py
+    accepts: jsonl
+    uses:
+    - num
