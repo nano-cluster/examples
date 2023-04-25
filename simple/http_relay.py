@@ -8,6 +8,10 @@ from aiohttp import web, WSMsgType
 
 from xrpc import App, log, StdIOApp, XRpcError
 
+# consider web.HTTPException
+#class HttpJsonError(web.HTTPException):
+#    pass
+
 # used to interface with stdio rpc
 rpc_app = App("http_relay")
 stdio_app = StdIOApp(rpc_app)
@@ -23,7 +27,7 @@ def get_http_error(e, req_id):
 async def post_handler(request: web.Request):
     method_path = request.match_info['method_path']
     parsed = await request.json()
-    req_id = parsed["id"]
+    req_id = parsed.get("id")
     if method_path:
         if "method" in parsed:
             raise web.HTTPError("bad request: method in path and body")
@@ -31,7 +35,6 @@ async def post_handler(request: web.Request):
     if "method" not in parsed:
         raise web.HTTPError("bad request: missing method")
     log("calling: ...")
-    status_code = 200
     try:
         res = await stdio_app.invoke(**parsed)
     except Exception as e:

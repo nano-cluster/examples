@@ -17,7 +17,7 @@ async def my_loop():
         a = random.randint(0, 100)
         b = random.randint(0, 100)
         log("periodic calling num_add: ...")
-        res = await stdio_app.invoke("num.num_add", params={"a": a, "b": b})
+        res = await stdio_app.invoke("mycalc.num_add", params={"a": a, "b": b})
         log("periodic calling num_add: res: ", res)
 
 async def amain():

@@ -35,14 +35,29 @@ class App:
         return self.methods[name](**kwargs)
 
 class XRpcError(RuntimeError):
-    def __init__(self, codename, message, **kwargs):
+    def __init__(self, codename, message, req_id=None, **kwargs):
         super().__init__(message)
         self.codename = codename
         self.xtra = kwargs
+        self.req_id = req_id
     
     @classmethod
-    def as_error_dict(cls, e: Exception, req_id: int) -> dict:
-        return {"id": req_id, "error":{"message":str(e)}}
+    def as_error_dict(cls, e: Exception, req_id: str = None) -> dict:
+        # TODO: trace if in debug mode ...etc
+        err = {"message":str(e), "codename": getattr(e, "codename", e.__class__.__name__)}
+        ret = {"error":err}
+        if req_id: ret["id"] = req_id
+        return ret
+
+    @classmethod
+    def from_error_dict(cls, error_dict: dict) -> Exception:
+        if not error_dict or "error" not in error_dict:
+            return None
+        err: dict = error_dict["error"]
+        req_id: dict = error_dict.get("id")
+        # only pass codename and message, the setattr known attributes
+        e = XRpcError(req_id=req_id, **err)
+        return e
 
 class StdIOApp:
     reader: asyncio.StreamReader
@@ -69,9 +84,9 @@ class StdIOApp:
         self.balance += 1
         try:
             res = await self.app.call(method, **params)
+            ret = {"id": id, "result": res}
         except Exception as e:
-            res = XRpcError.as_error_dict(e, id)
-        ret = {"id": id, "result": res}
+            ret = XRpcError.as_error_dict(e, id)
         ret_b = json.dumps(ret, ensure_ascii=False).encode("utf-8")+b"\n"
         self.writer.write(ret_b)
         self.balance -= 1
@@ -90,7 +105,7 @@ class StdIOApp:
         res = await future
         del self.invokes[id]
         if "error" in res:
-            raise RuntimeError(res["error"]["message"])
+            raise XRpcError.from_error_dict(res)
         return res
 
     def _handle_incoming_result(self, parsed):
@@ -99,7 +114,8 @@ class StdIOApp:
         result = parsed.get("result")
         error = parsed.get("error")
         if error is not None:
-            future.set_exception(XRpcError(**error))
+            e = XRpcError.from_error_dict(parsed)
+            future.set_exception(e)
             return
         # TODO: should it be entire parsed not just result? should we have invoke_raw
         future.set_result(result)

@@ -5,7 +5,7 @@ modules:
     accepts: jsonl
     # modules allowed to be called via http relay
     uses:
-    - num
+    - mycalc
     - book
   db:
     fork: ./db_relay.py
@@ -13,8 +13,8 @@ modules:
     # this is the opposite of uses
     only_from:
     - book
-  num:
-    fork: ./num.py
+  mycalc:
+    fork: ./mycalc.py
     accepts: jsonl
   book:
     fork: ./book.py
@@ -25,4 +25,4 @@ modules:
     fork: ./periodic.py
     accepts: jsonl
     uses:
-    - num
+    - mycalc
