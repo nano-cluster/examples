@@ -6,7 +6,7 @@ import asyncio
 
 from aiohttp import web, WSMsgType
 
-from xrpc import App, log, StdIOApp
+from xrpc import App, log, StdIOApp, XRpcError
 
 # used to interface with stdio rpc
 rpc_app = App("http_relay")
@@ -14,10 +14,16 @@ stdio_app = StdIOApp(rpc_app)
 
 routes = web.RouteTableDef()
 
+def get_http_error(e, req_id):
+    res = XRpcError.as_error_dict(e, req_id)
+    status_code = 500
+    return web.json_response(res, status=status_code)
+
 @routes.post('/xrpc/{method_path:.*}')
 async def post_handler(request: web.Request):
     method_path = request.match_info['method_path']
     parsed = await request.json()
+    req_id = parsed["id"]
     if method_path:
         if "method" in parsed:
             raise web.HTTPError("bad request: method in path and body")
@@ -25,7 +31,12 @@ async def post_handler(request: web.Request):
     if "method" not in parsed:
         raise web.HTTPError("bad request: missing method")
     log("calling: ...")
-    res = await stdio_app.invoke(**parsed)
+    status_code = 200
+    try:
+        res = await stdio_app.invoke(**parsed)
+    except Exception as e:
+        log("got error: ", e)
+        return get_http_error(e, req_id)
     log("got res: ", res)
     return web.json_response(res)
 

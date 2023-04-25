@@ -28,7 +28,6 @@ async def book_search(q: str):
     }
 
 def main():
-    
     asyncio.run(stdio_app.loop())
 
 if __name__ == "__main__":

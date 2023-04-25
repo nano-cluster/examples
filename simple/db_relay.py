@@ -2,7 +2,13 @@
 
 import asyncio
 
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine, AsyncConnection
+from sqlalchemy.ext.asyncio import (
+    create_async_engine,
+    AsyncEngine,
+    AsyncConnection,
+    # async_sessionmaker,
+    # AsyncSession,
+)
 from sqlalchemy.sql import text
 
 from xrpc import App, log, StdIOApp
@@ -11,7 +17,12 @@ from xrpc import App, log, StdIOApp
 app = App("db")
 stdio_app = StdIOApp(app)
 
-
+# async_session: async_sessionmaker[AsyncSession] = async_sessionmaker(engine, expire_on_commit=False)
+# async with async_session() as session:
+#     async with session.begin():
+#         query = session.query(myTable)
+#         result = await session.execute(query)
+#         column_names = query.statement.columns.keys()
 
 async def get_engine(name) -> AsyncEngine:
     # conn_str = "postgresql+asyncpg://scott:tiger@localhost/test"
@@ -27,6 +38,7 @@ async def fetch_all(sql, params=None, connection=None):
     async with engine.begin() as con:
         conn: AsyncConnection = con
         result = await conn.execute(text(sql), params)
+        # result._metadata.keys
         items = [ dict(i) for i in result.fetchall() ]
     await engine.dispose()
     log("** fetch_all: ", items)

@@ -39,6 +39,10 @@ class XRpcError(RuntimeError):
         super().__init__(message)
         self.codename = codename
         self.xtra = kwargs
+    
+    @classmethod
+    def as_error_dict(cls, e: Exception, req_id: int) -> dict:
+        return {"id": req_id, "error":{"message":str(e)}}
 
 class StdIOApp:
     reader: asyncio.StreamReader
@@ -63,7 +67,10 @@ class StdIOApp:
 
     async def call(self, id: str, method: str, **params):
         self.balance += 1
-        res = await self.app.call(method, **params)
+        try:
+            res = await self.app.call(method, **params)
+        except Exception as e:
+            res = XRpcError.as_error_dict(e, id)
         ret = {"id": id, "result": res}
         ret_b = json.dumps(ret, ensure_ascii=False).encode("utf-8")+b"\n"
         self.writer.write(ret_b)
@@ -82,6 +89,8 @@ class StdIOApp:
         self.invokes[id] = future
         res = await future
         del self.invokes[id]
+        if "error" in res:
+            raise RuntimeError(res["error"]["message"])
         return res
 
     def _handle_incoming_result(self, parsed):
