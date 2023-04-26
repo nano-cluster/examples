@@ -1,7 +1,8 @@
 (function(document, window) {
 window.ui=window.ui||{};
-ui.ping_click=async function() {
-    const el = document.getElementById("res_ping");
+ui.ping_click=async function(t) {
+    const dst_id=t.getAttribute("data-dst");
+    const el = document.getElementById(dst_id);
     const t1=Date.now();
     const res = await xrpc_call("_ping");
     const dt=Date.now()-t1;
