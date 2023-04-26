@@ -39,11 +39,12 @@ async def post_handler(request: web.Request):
     log("calling: ...")
     try:
         res = await stdio_app.invoke(**parsed)
+        log("got res: ", res)
+        return web.json_response({"id": req_id, "result": res})
     except Exception as e:
         log("got error: ", e)
         return get_http_error(e, req_id)
-    log("got res: ", res)
-    return web.json_response(res)
+    
 
 async def websocket_handler(request):
     ws = web.WebSocketResponse()
@@ -59,9 +60,16 @@ async def websocket_handler(request):
                 parsed = None
             if not parsed: continue
             # TODO: we need invoke_raw
-            res = await stdio_app.invoke(**parsed)
-            res_b = json.dumps(res).encode("utf-8")+b"\n"
-            await ws.send_str(res_b)
+            req_id = parsed.get("id")
+            try:
+                ret = await stdio_app.invoke(**parsed)
+                res = {"id": req_id, "result": ret}
+            except Exception as e:
+                res = XRpcError.as_error_dict(e, req_id)
+            # res_b = json.dumps(res).encode("utf-8")+b"\n"
+            # await ws.send_bytes(res_b)
+            res_str = json.dumps(res)+"\n"
+            await ws.send_str(res_str)
         elif msg.type == WSMsgType.ERROR:
             log('ws connection closed with exception %s' %
                   ws.exception())
