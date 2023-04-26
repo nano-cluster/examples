@@ -1,5 +1,12 @@
 (function(document, window) {
 window.ui=window.ui||{};
+ui.ping_click=async function() {
+    const el = document.getElementById("res_ping");
+    const t1=Date.now();
+    const res = await xrpc_call("_ping");
+    const dt=Date.now()-t1;
+    el.innerText = `${dt} ms: `+JSON.stringify(res);
+}
 ui.btn1_click=async function() {
     const el = document.getElementById("res1");
     const t1=Date.now();

@@ -100,6 +100,8 @@ class StdIOApp:
                 id = str(uuid4())
             else:
                 id = None
+        if method=="_ping":
+            return {"response":"pong"} # TODO: add from and at
         req = {"id": id, "method": method, "params": params}
         req_b = json.dumps(req, ensure_ascii=False).encode("utf-8")+b"\n"
         self.writer.write(req_b)
