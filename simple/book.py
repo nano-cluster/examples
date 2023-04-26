@@ -12,7 +12,7 @@ stdio_app = StdIOApp(app)
 async def book_search(q: str):
     log("inside: book_search")
     await asyncio.sleep(random.randint(50,250)/1000.0)
-    res = await stdio_app.invoke("db.fetch_all", params={"sql": "select * from books1"})
+    res = await stdio_app.invoke("db.fetch_all", params={"sql": "select * from books"})
     log("query res", res)
     items = res["items"]
     return {
