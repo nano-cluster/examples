@@ -21,4 +21,16 @@ ui.btn3_click=async function() {
     const dt=Date.now()-t1;
     el.innerText = `${dt} ms: `+JSON.stringify(res);
 }
+ui.btn4_click=async function() {
+    const el = document.getElementById("res4");
+    const t1=Date.now();
+    let res;
+    try {
+        res = await xrpc_call("_admin.get_stats", {});
+    } catch(e) {
+        res = {message: e.message, codename: e.codename}
+    }
+    const dt=Date.now()-t1;
+    el.innerText = `${dt} ms: `+JSON.stringify(res);
+}
 })(document, window);

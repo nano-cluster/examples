@@ -7,6 +7,12 @@ modules:
     uses:
     - mycalc
     - book
+  http_admin_relay:
+    fork: ./http_relay.py --port 5000 --basic-auth YWRtaW46YWRtaW4= --static /=public_admin
+    accepts: jsonl
+    # modules allowed to be called via http relay
+    uses:
+    - _admin
   db:
     fork: ./db_relay.py
     accepts: jsonl

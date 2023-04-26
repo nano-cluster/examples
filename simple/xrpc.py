@@ -26,12 +26,15 @@ class App:
         def decor(func):
             nonlocal name
             if name is None:
-                name = self.name + "." + func.__name__
+                # name = self.name + "." + func.__name__
+                name = func.__name__
             self.methods[name] = func
             return func
         return decor
 
     def call(self, name, **kwargs):
+        if "." in name:
+            name = name.rsplit(".", 1)[-1]
         return self.methods[name](**kwargs)
 
 class XRpcError(RuntimeError):
