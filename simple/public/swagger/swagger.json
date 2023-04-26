@@ -1,0 +1,116 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "{x}RPC",
+    "description": "{x}RPC examples",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "{baseurl}",
+      "variables": {
+        "baseurl": {
+          "default": "http://localhost:3000/xrpc/"
+        }
+      }
+    }
+  ],
+  "tags": [
+    "mycalc",
+    "book"
+  ],
+  "paths": {
+    "/book.book_search": {
+      "post": {
+        "summary": "list books",
+        "tags": [
+          "book"
+        ],
+        "requestBody": {
+          "description": "{x}rpc request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "params": {
+                    "type": "object",
+                    "properties": {
+                      "q": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "params"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "xrpc response body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mycalc.num_add": {
+      "post": {
+        "summary": "add two numbers",
+        "tags": [
+          "mycalc"
+        ],
+        "requestBody": {
+          "description": "json-rpc request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "params": {
+                    "type": "object",
+                    "properties": {
+                      "a": {
+                        "type": "integer"
+                      },
+                      "b": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "params"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "xrpc response body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  }
+}

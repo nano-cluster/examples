@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{x}RPC WebUI</title>
+  <link rel="stylesheet" type="text/css" href="http://unpkg.com/swagger-ui-dist@3/swagger-ui.css" >
+</head>
+<body>
+<div id="swagger-ui"></div>
+<script src="http://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
+<script>
+var ui = SwaggerUIBundle({
+    url: "swagger.json",
+    dom_id: '#swagger-ui'
+})
+</script>
+</body>
+</html>

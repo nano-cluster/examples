@@ -2,6 +2,8 @@
 
 import random
 import json
+import argparse
+import os
 import asyncio
 
 from aiohttp import web, WSMsgType
@@ -74,6 +76,29 @@ async def amain():
     await stdio_app.loop()
 
 def main():
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument(
+        "--static",
+        metavar="PREFIX=PATH",
+        action="append",
+        help="add static directory to be served, --static /=./public --static assets=build/assets",
+    )
+    args = parser.parse_args()
+    for prefix_w_path in args.static:
+        prefix, path = prefix_w_path.split("=", 1) if "=" in prefix_w_path else (prefix_w_path, prefix_w_path)
+        prefix = "/" + prefix.strip('/')
+        if prefix == "/": prefix=""
+        for item in os.listdir(path):
+            item_path = f'{path}/{item}'
+            if item=="index.html":
+                app.router.add_get(f"{prefix}/", lambda request: web.FileResponse(item_path))
+            elif os.path.isdir(item_path):
+                log(f"adding prefix='{prefix}/{item}' path='{path}/{item}'")
+                app.router.add_static(f'{prefix}/{item}', path=item_path)
+            else:
+                log(f"** WW** skip adding prefix='{prefix}/{item}' path='{path}/{item}'")
+
+
     loop = asyncio.get_event_loop()
     loop.create_task(amain())
     port = 3000

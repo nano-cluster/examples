@@ -1,7 +1,7 @@
 ---
 modules:
   http_relay:
-    fork: ./http_relay.py
+    fork: ./http_relay.py --static /=public
     accepts: jsonl
     # modules allowed to be called via http relay
     uses:
