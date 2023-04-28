@@ -11,14 +11,46 @@
     <link href="assets/main.css" rel="stylesheet">
 </head>
 <body>
+  <div class="max-width-4 mx-auto mb4">
   <h1><em>Nano</em>Cluster Admin</h1>
-  <p>
+  <section>
     API documentation is <a href="swagger/index.html">here</a>
-    <ol>
-      <li><button type="button" onclick="ui.btn1_click();">stats</button><pre id="res1"></pre>
-    
-    </ol>
-  </p>
+  </section>
+  <h2>Top</h2>
+  <section>
+    <pre>
+    total_at: ...
+    err_at: ...
+    fetched_at: x seconds ago
+    </pre>
+
+    <select name="top_by" id="top_by">
+      <option value="balance_mothod">Balance: by Method</option>
+      <option value="balance_mothod_caller">Balance: by Method &amp; Caller Module</option>
+      <option value="balance_inter_mod">Balance: by Module Pairs</option>
+      <option value="total_mothod">Total: Method</option>
+      <option value="total_mothod_caller">Total: Method &amp; Caller</option>
+      <option value="total_inter_mod">Total: Module Pairs</option>
+      <option value="err_mothod">Errors: Method</option>
+      <option value="err_mothod_caller">Errors: Method &amp; Caller</option>
+      <option value="err_inter_mod">Errors: Module Pairs</option>
+    </select>
+    <select name="top_every" id="top_every">
+      <option value="500">every 500 ms</option>
+      <option value="1000">every 1 second</option>
+      <option value="5000">every 5 seconds</option>
+      <option value="15000">every 15 seconds</option>
+      <option value="60000">every minute</option>
+    </select>
+    <button type="button" onclick="ui.refresh_click();">refresh</button><br/>
+    <pre id="top_out">
+    total_at: ...
+    err_at: ...
+    fetched_at: x seconds ago
+    </pre>
+
+  </section>
+  </div>
 <script src="assets/xrpc.js"></script>
 <script src="assets/main.js"></script>
 </body>

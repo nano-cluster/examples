@@ -1,10 +1,28 @@
 (function(document, window) {
 window.ui=window.ui||{};
-ui.btn1_click=async function() {
-    const el = document.getElementById("res1");
+let pending_refresh=false;
+async function refresh() {
+    if (pending_refresh) return;
+    const by = document.getElementById("top_by");
+    const by_key = by.value;
+    const el = document.getElementById("top_out");
     const t1=Date.now();
-    const res = await xrpc_call("_admin.get_stats");
-    const dt=Date.now()-t1;
-    el.innerText = `${dt} ms: `+JSON.stringify(res, null, 2);
+    let res;
+    try {
+        res = await xrpc_call("_admin.get_stats");
+    } catch(e) {
+        res = null;
+    }
+    if (res) {
+        const items=Object.entries(res[by_key]).toSorted((a, b)=>b[1]-a[1]);
+        const out = items.map(([n,c])=>`${n}\t${c}`).join("\n")
+        el.innerText = out
+    }
+    const ev = document.getElementById("top_every");
+    setTimeout(refresh, ev.value);
 }
+ui.refresh=async function() {
+    refresh();
+}
+setTimeout(refresh, 1000);
 })(document, window);
