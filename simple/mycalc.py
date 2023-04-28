@@ -28,6 +28,10 @@ async def num_sub(a: int, b: int):
     await asyncio.sleep(random.randint(50,250)/1000.0)
     return {"value": a-b}
 
+@app.method()
+async def sqsum(values):
+    return {"sum": sum(values), "sqsum": sum((v*v for v in values))}
+
 
 def main():
     asyncio.run(stdio_app.loop())
