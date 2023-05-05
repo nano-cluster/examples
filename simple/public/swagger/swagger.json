@@ -18,7 +18,7 @@
   "tags": [
     "mycalc",
     "book",
-    "db",
+    "db"
   ],
   "paths": {
     "/db.execute": {
@@ -96,7 +96,7 @@
                         "type": "string"
                       },
                       "kv": {
-                        "type": "booleal"
+                        "type": "boolean"
                       }
                     }
                   }
@@ -148,7 +148,7 @@
                         "type": "string"
                       },
                       "kv": {
-                        "type": "booleal"
+                        "type": "boolean"
                       }
                     }
                   }
@@ -174,7 +174,7 @@
         }
       }
     },
-    "/book.book_search": {
+    "/book.list": {
       "post": {
         "summary": "list books",
         "tags": [
@@ -190,8 +190,8 @@
                   "params": {
                     "type": "object",
                     "properties": {
-                      "q": {
-                        "type": "string"
+                      "page": {
+                        "type": "number"
                       }
                     }
                   }

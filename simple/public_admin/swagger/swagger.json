@@ -16,15 +16,14 @@
     }
   ],
   "tags": [
-    "mycalc",
-    "book"
+    "admin"
   ],
   "paths": {
-    "/book.book_search": {
+    "/_admin.get_stats": {
       "post": {
-        "summary": "list books",
+        "summary": "admin stats",
         "tags": [
-          "book"
+          "admin"
         ],
         "requestBody": {
           "description": "{x}rpc request body",
@@ -34,58 +33,7 @@
               "schema": {
                 "properties": {
                   "params": {
-                    "type": "object",
-                    "properties": {
-                      "q": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "required": [
-                  "params"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "xrpc response body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/mycalc.num_add": {
-      "post": {
-        "summary": "add two numbers",
-        "tags": [
-          "mycalc"
-        ],
-        "requestBody": {
-          "description": "json-rpc request body",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "params": {
-                    "type": "object",
-                    "properties": {
-                      "a": {
-                        "type": "integer"
-                      },
-                      "b": {
-                        "type": "integer"
-                      }
-                    }
+                    "type": "object"
                   }
                 },
                 "required": [

@@ -25,7 +25,7 @@ ui.btn2_click=async function() {
 ui.btn3_click=async function() {
     const el = document.getElementById("res3");
     const t1=Date.now();
-    const res = await xrpc_call("book.book_search", {q:"foo"});
+    const res = await xrpc_call("book.list", {page: 1});
     const dt=Date.now()-t1;
     el.innerText = `${dt} ms: `+JSON.stringify(res);
 }

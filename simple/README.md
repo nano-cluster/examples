@@ -21,7 +21,7 @@ trying the http relay
 ```
 curl -X POST -d '{"id":"abc", "params":{"a":1, "b":10}}' localhost:3000/xrpc/mycalc.num_add
 
-curl -X POST -d '{"params":{"q":"foo"}}' localhost:3000/xrpc/book.book_search
+curl -X POST -d '{"params":{"page": 1}}' localhost:3000/xrpc/book.list
 ```
 
 
@@ -36,8 +36,9 @@ $ curl -X POST -d '{"params":{"q":"something"}}' localhost:3000/xrpc/mycalc.num_
 ```
 echo 'http://localhost:3000/xrpc/mycalc.num_add POST {"params": {"a": 10, "b": 20}}' > urls1.txt
 echo 'http://localhost:3000/xrpc/mycalc.rnd_num POST {"params": {}}' > urls2.txt
-echo 'http://localhost:3000/xrpc/book.book_search POST {"params": {"q":"foo"}}' > urls3.txt
+echo 'http://localhost:3000/xrpc/book.list POST {"params": {"page":1}}' > urls3.txt
 siege -qb -c 50 -t 30s -f urls1.txt
 siege -qb -c 50 -t 30s -f urls2.txt
 siege -qb -c 50 -t 30s -f urls3.txt
 ```
+

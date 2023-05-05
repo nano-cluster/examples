@@ -72,7 +72,7 @@ async def fetch_all(sql, params=None, connection=None, kv=False):
         meta = {
             "columns": list(result._metadata.keys),
         }
-        items = [ dict(i) if kv else tuple(i) for i in result.fetchall() ]
+        items = [ i._asdict() if kv else tuple(i) for i in result.fetchall() ]
     await engine.dispose()
     log("** fetch_all: ", meta, items)
     return {"meta": meta, "items": items}

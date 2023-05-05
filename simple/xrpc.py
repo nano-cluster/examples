@@ -16,18 +16,21 @@ def log(*msgs, sep=" ", end="\n"):
     sys.stderr.flush()
 
 class App:
-    def __init__(self, name=None):
+    def __init__(self, name=None, strip_prefix="action_"):
         if not name:
             name = os.path.basename(sys.argv[0])
         self.name = name
+        self.strip_prefix = strip_prefix
         self.methods = {}
 
-    def method(self, name=None):
+    def method(self, name: str=None):
         def decor(func):
             nonlocal name
             if name is None:
                 # name = self.name + "." + func.__name__
                 name = func.__name__
+                if name.startswith(self.strip_prefix):
+                    name = name[len(self.strip_prefix):]
             self.methods[name] = func
             return func
         return decor
