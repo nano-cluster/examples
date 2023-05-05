@@ -17,9 +17,163 @@
   ],
   "tags": [
     "mycalc",
-    "book"
+    "book",
+    "db",
   ],
   "paths": {
+    "/db.execute": {
+      "post": {
+        "summary": "execute query line INSERT or UPDATE",
+        "tags": [
+          "db"
+        ],
+        "requestBody": {
+          "description": "{x}rpc request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "params": {
+                    "type": "object",
+                    "properties": {
+                      "sql": {
+                        "type": "string"
+                      },
+                      "params": {
+                        "type": "object"
+                      },
+                      "connection": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "params"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "xrpc response body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/db.fetch_all": {
+      "post": {
+        "summary": "execute SELECT and fetch all rows",
+        "tags": [
+          "db"
+        ],
+        "requestBody": {
+          "description": "{x}rpc request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "params": {
+                    "type": "object",
+                    "properties": {
+                      "sql": {
+                        "type": "string"
+                      },
+                      "params": {
+                        "type": "object"
+                      },
+                      "connection": {
+                        "type": "string"
+                      },
+                      "kv": {
+                        "type": "booleal"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "params"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "xrpc response body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+      "/db.fetch_one": {
+      "post": {
+        "summary": "execute SELECT and fetch one row",
+        "tags": [
+          "db"
+        ],
+        "requestBody": {
+          "description": "{x}rpc request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "params": {
+                    "type": "object",
+                    "properties": {
+                      "sql": {
+                        "type": "string"
+                      },
+                      "params": {
+                        "type": "object"
+                      },
+                      "connection": {
+                        "type": "string"
+                      },
+                      "kv": {
+                        "type": "booleal"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "params"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "xrpc response body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/book.book_search": {
       "post": {
         "summary": "list books",

@@ -8,13 +8,14 @@ async function main() {
   const values = range(1000);
   
   await json_rpc.call("mycalc.sqsum", {values}).then(console.log)
+  await json_rpc.call("mycalc.sqsum_threaded", {values}).then(console.log)
   
   
   var t1=Date.now();
   var promises=[];
-  const n=2000;
+  const n=20000;
   for(let i=0;i<n;++i) {
-    promises.push(json_rpc.call("mycalc.sqsum", {values}).then(({sum, sqsum})=>sum*sum-sqsum));
+    promises.push(json_rpc.call("mycalc.sqsum_threaded", {values}).then(({sum, sqsum})=>sum*sum-sqsum));
   }
   var t2=Date.now();
   await Promise.all(promises);

@@ -31,18 +31,82 @@ async def get_engine(name) -> AsyncEngine:
     return engine
 
 @app.method()
-async def fetch_all(sql, params=None, connection=None):
+async def execute(sql, params=None, connection=None):
+    """
+    execute a database query like INSERT or UPDATE
+    pass params via `params` to avoid SQL injection
+    """
     if not params:
         params = {}
+    meta = {}
     engine = await get_engine(connection)
     async with engine.begin() as con:
         conn: AsyncConnection = con
         result = await conn.execute(text(sql), params)
-        # result._metadata.keys
-        items = [ dict(i) for i in result.fetchall() ]
+        meta = {
+            "rowcount": getattr(result, "rowcount", None),
+            "lastrowid": getattr(result, "lastrowid", None),
+        }
     await engine.dispose()
-    log("** fetch_all: ", items)
-    return {"items": items}
+    return {"meta": meta}
+
+@app.method()
+async def fetch_all(sql, params=None, connection=None, kv=False):
+    """
+    fetch rows from a database query like SELECT statement
+    set kv to True to return rows as key-value mapping instead of list
+    you had better use list to avoid repeating keys with every row and is useful with panads
+
+```
+    res = pd.DataFrame(rows, columns=meta["columns"])
+```
+    """
+    if not params:
+        params = {}
+    meta = {}
+    engine = await get_engine(connection)
+    async with engine.begin() as con:
+        conn: AsyncConnection = con
+        result = await conn.execute(text(sql), params)
+        log(result._metadata)
+        meta = {
+            "columns": list(result._metadata.keys),
+        }
+        items = [ dict(i) if kv else tuple(i) for i in result.fetchall() ]
+    await engine.dispose()
+    log("** fetch_all: ", meta, items)
+    return {"meta": meta, "items": items}
+
+@app.method()
+async def fetch_one(sql, params=None, connection=None, kv=False):
+    """
+    fetch a single row from a database query like SELECT statement
+    set kv to True to return rows as key-value mapping instead of list
+
+```
+    res = pd.DataFrame(rows, columns=meta["columns"])
+```
+    """
+    if not params:
+        params = {}
+    meta = {}
+    engine = await get_engine(connection)
+    async with engine.begin() as con:
+        conn: AsyncConnection = con
+        result = await conn.execute(text(sql), params)
+        log(result._metadata)
+        meta = {
+            "columns": list(result._metadata.keys),
+        }
+        item = result.fetchone()
+        if item is not None:
+            item = dict(item) if kv else tuple(item)
+    await engine.dispose()
+    log("** fetch_one: ", meta, item)
+    return {"meta": meta, "item": item}
+
+
+
 
 def main():
     asyncio.run(stdio_app.loop())

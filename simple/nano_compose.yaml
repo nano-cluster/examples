@@ -7,6 +7,7 @@ modules:
     uses:
     - mycalc
     - book
+    - db
   http_admin_relay:
     fork: ./http_relay.py --port 5000 --basic-auth YWRtaW46YWRtaW4= --static /=public_admin
     accepts: jsonl
@@ -19,6 +20,7 @@ modules:
     # this is the opposite of uses
     only_from:
     - book
+    - http_relay
   mycalc:
     fork: ./mycalc.py
     accepts: jsonl
