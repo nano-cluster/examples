@@ -14,6 +14,8 @@ stdio_app = StdIOApp(app)
 @app.method()
 async def action_list(page: int=1, per_page: int=10):
     log("inside: book.list")
+    if page<1:
+        raise ValueError("page can't be less than 1")
     # sleep to simulate slow query
     await asyncio.sleep(random.randint(50,250)/1000.0)
     res = await stdio_app.invoke("db.fetch_one", params={"sql": "select count(*) c from books"})
