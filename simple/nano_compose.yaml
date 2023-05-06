@@ -7,6 +7,7 @@ modules:
     uses:
     - mycalc
     - book
+    - book_js
     - db
   http_admin_relay:
     fork: ./http_relay.py --port 5000 --basic-auth YWRtaW46YWRtaW4= --static /=public_admin
@@ -20,12 +21,18 @@ modules:
     # this is the opposite of uses
     only_from:
     - book
+    - book_js
     - http_relay
   mycalc:
     fork: ./mycalc.py
     accepts: jsonl
   book:
     fork: ./book.py
+    accepts: jsonl
+    uses:
+    - db
+  book_js:
+    fork: /bin/bash -c "cd book_js; exec node index.mjs"
     accepts: jsonl
     uses:
     - db

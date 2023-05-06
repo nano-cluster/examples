@@ -34,7 +34,7 @@ ui.btn4_click=async function() {
     const t1=Date.now();
     let res;
     try {
-        res = await xrpc_call("_admin.get_stats", {});
+        res = await xrpc_call("book_js.list", {});
     } catch(e) {
         res = {message: e.message, codename: e.codename}
     }
