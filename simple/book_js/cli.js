@@ -7,7 +7,7 @@ app.add_method("list", async function({page, per_page}) {
     if (!page) page=1;
     if (!per_page) per_page=10;
     page = parseInt(page);
-    const {item: count} = await stdio_app.invoke("db.fetch_one", {
+    const {item: [count]} = await stdio_app.invoke("db.fetch_one", {
         "sql":"select count(*) c from books",
     });
     stdio_app.log('got count = '+count);
