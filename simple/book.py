@@ -13,11 +13,11 @@ stdio_app = StdIOApp(app)
 
 @app.method()
 async def action_list(page: int=1, per_page: int=10):
-    log("inside: book.list")
+    #log("inside: book.list")
     if page<1:
         raise ValueError("page can't be less than 1")
     # sleep to simulate slow query
-    await asyncio.sleep(random.randint(50,250)/1000.0)
+    #await asyncio.sleep(random.randint(50,250)/1000.0)
     res = await stdio_app.invoke("db.fetch_one", params={"sql": "select count(*) c from books"})
     book_count = res["item"][0]
     pages = math.ceil(float(book_count)/per_page)
@@ -28,7 +28,7 @@ async def action_list(page: int=1, per_page: int=10):
         "params": {"offset": offset},
         "kv": True # set to False if you want to use pandas or to save transfer
     })
-    log("query res", res)
+    #log("query res", res)
     items = res["items"]
     #columns = res["meta"]["columns"]
     #df = pd.DataFrame(items, columns=columns)

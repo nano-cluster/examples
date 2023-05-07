@@ -37,13 +37,13 @@ async def post_handler(request: web.Request):
         parsed["method"] = method_path
     if "method" not in parsed:
         raise web.HTTPError("bad request: missing method")
-    log("calling: ...")
+    #log("calling: ...")
     try:
         res = await stdio_app.invoke(**parsed)
-        log("got res: ", res)
+        #log("got res: ", res)
         return web.json_response({"id": req_id, "result": res})
     except Exception as e:
-        log("got error: ", e)
+        #log("got error: ", e)
         return get_http_error(e, req_id)
     
 
@@ -74,7 +74,7 @@ async def websocket_handler(request):
         elif msg.type == WSMsgType.ERROR:
             log('ws connection closed with exception %s' %
                   ws.exception())
-    log('websocket connection closed')
+    #log('websocket connection closed')
     return ws
 
 auth = MyBasicAuthMiddleware()
@@ -108,7 +108,7 @@ def main():
     args = parser.parse_args()
     auth_ls = args.basic_auth or []
     for basic_auth_item in auth_ls:
-        log("auth:", basic_auth_item)
+        #log("auth:", basic_auth_item)
         auth.add(basic_auth_item)
     static_ls = args.static or []
     for prefix_w_path in static_ls:

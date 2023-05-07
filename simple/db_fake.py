@@ -10,7 +10,7 @@ app = App()
 
 @app.method()
 async def db_select(sql: str, params):
-    log("inside: db_select")
+    #log("inside: db_select")
     await asyncio.sleep(random.randint(50,250)/1000.0)
     return {
         "meta": {

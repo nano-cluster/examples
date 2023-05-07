@@ -16,7 +16,7 @@ modules:
     uses:
     - _admin
   db:
-    fork: ./db_relay.py
+    fork: ./db_relay.py -c 'default=sqlite+aiosqlite:///database.db'
     accepts: jsonl
     # this is the opposite of uses
     only_from:
