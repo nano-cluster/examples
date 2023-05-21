@@ -8,6 +8,7 @@ modules:
     - mycalc
     - book
     - book_js
+    - book_php
     - db
   http_admin_relay:
     fork: ./http_relay.py --port 5000 --basic-auth YWRtaW46YWRtaW4= --static /=public_admin
@@ -22,6 +23,7 @@ modules:
     only_from:
     - book
     - book_js
+    - book_php
     - http_relay
   mycalc:
     fork: ./mycalc.py
@@ -33,6 +35,11 @@ modules:
     - db
   book_js:
     fork: /bin/bash -c "cd book_js; exec node index.mjs"
+    accepts: jsonl
+    uses:
+    - db
+  book_php:
+    fork: /bin/bash -c "cd book_php; exec php index.php"
     accepts: jsonl
     uses:
     - db
