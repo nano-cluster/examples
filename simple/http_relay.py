@@ -11,6 +11,7 @@ from aiohttp import web, WSMsgType
 
 from xrpc import App, log, StdIOApp, XRpcError
 from http_auth import MyBasicAuthMiddleware
+
 # consider web.HTTPException
 #class HttpJsonError(web.HTTPException):
 #    pass

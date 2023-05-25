@@ -30,6 +30,13 @@ class StdIOApp {
     protected function __construct(){
 
     }
+    public static function log($line) {
+        if (!is_string($line)) {
+            $line=json_encode($line, JSON_UNESCAPED_UNICODE);
+        }
+        fwrite(STDERR, $line);
+        fwrite(STDERR, "\n");
+    }
 
     public static function loop() {
         while(true) {
@@ -64,7 +71,15 @@ class StdIOApp {
                 $fid = spl_object_id($fiber);
                 $id = static::$_ids[$fid];
                 unset(static::$_ids[$fid]);
-                $res = $fiber->getReturn();
+                // TODO: handle error, this throws FiberError $e->previous with the actual error
+                try {
+                    $res = $fiber->getReturn();
+                } catch(FiberError $e) {
+                    $p = $e->getPrevious();
+                    var_dump($e->getMessage(), $p?$p->getMessage():null);
+                    echo (string)($e), $e->getTraceAsString()."\n";
+                    $res = null;
+                }
                 echo json_encode(['id'=>$id, 'result'=>$res], JSON_UNESCAPED_UNICODE)."\n";
             }
             static::read(0);
@@ -85,7 +100,9 @@ class StdIOApp {
                 }
                 $ret=null;
                 try {
-                    $ret=$method->invokeArgs(null, $params);
+                    $ret = $method->invokeArgs(null, $params);
+                } catch(Throwable $e) {
+                    $ret = $e;
                 } finally {
                     StdIOApp::invoke("no_op");
                 }
@@ -131,6 +148,16 @@ class StdIOApp {
         return $fiber;
     }
 
+    public static function __callStatic($name, $arguments)
+    {
+        if (substr($name, 0, 7)!="invoke_") {
+            throw new Exception("method $name not found");
+        }
+        $method_name = str_replace('__', '.', substr($name, 7));
+        static::log([$method_name, $arguments]);
+        return static::invoke($method_name, $arguments[0]);
+    }
+
     public static function invoke($method, $params=[], $id="") {
         if (!$id) {
             $id=get_next_id();
@@ -148,7 +175,12 @@ class StdIOApp {
         $method = $parsed->method??null;
         if ($fiber) {
             if ($method=="no_op") {
-                $fiber->resume(null);
+                if (!$fiber->isTerminated() && $fiber->isSuspended()) {
+                    try {
+                        $fiber->resume(null);
+                    }catch(Throwable $e) {
+                    }
+                }
                 return $fiber;
             }
             if ($id) static::$invokes[$id] = $fiber;
@@ -169,7 +201,12 @@ class StdIOApp {
             $fiber->throw(new Exception($parsed->error->message));
             return $fiber;
         }
-        $fiber->resume($parsed->result??null);
+        if (!$fiber->isTerminated() && $fiber->isSuspended()) {
+            try {
+                $fiber->resume($parsed->result??null);
+            } catch(Throwable $e) {
+            }
+        }
         return $fiber;
     }
 

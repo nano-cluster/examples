@@ -2,7 +2,6 @@
 
 import sys
 import asyncio
-
 import argparse
 
 from sqlalchemy.ext.asyncio import (
