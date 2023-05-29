@@ -9,6 +9,7 @@ modules:
     - book
     - book_js
     - book_php
+    - book_go
     - db
   http_admin_relay:
     fork: ./http_relay.py --port 5000 --basic-auth YWRtaW46YWRtaW4= --static /=public_admin
@@ -24,6 +25,7 @@ modules:
     - book
     - book_js
     - book_php
+    - book_go
     - http_relay
   mycalc:
     fork: ./mycalc.py
@@ -40,6 +42,12 @@ modules:
     - db
   book_php:
     fork: /bin/bash -c "cd book_php; exec php index.php"
+    accepts: jsonl
+    uses:
+    - db
+  book_go:
+    #fork: ./book_go
+    fork: /bin/bash -c "go build && exec ./book_go"
     accepts: jsonl
     uses:
     - db

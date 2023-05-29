@@ -19,11 +19,11 @@ waiting: ...
 trying the http relay
 
 ```
-curl -X POST -d '{"id":"abc", "params":{"a":1, "b":10}}' localhost:3000/xrpc/mycalc.num_add
+curl -X POST -d '{"id":"abc", "params":{"a":1, "b":10}}' 'localhost:3000/xrpc/mycalc.num_add'
 
-curl -X POST -d '{"params":{"page": 1}}' localhost:3000/xrpc/book.list
+curl -X POST -d '{"params":{"page": 1}}' 'localhost:3000/xrpc/book.list
 
-curl -X POST -d '{"params":{"page": 2}}' localhost:3000/xrpc/book_js.list'
+curl -X POST -d '{"params":{"page": 2}}' 'localhost:3000/xrpc/book_js.list'
 
 ```
 
